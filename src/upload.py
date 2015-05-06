@@ -5,7 +5,7 @@ from time import *
 #upload apk file
 def upload(filename):
 	url = 'http://m.qq.com/security_lab//upload_file.jsp'
-	files = {'file': open('jimm.apk', 'rb'), 'type': 'apk'}
+	files = {'file': open(filename, 'rb'), 'type': 'apk'}
 	r = requests.post(url, files=files)
 	text = r.text
 	apk_name = text.split(";")[0].split("\"")[-2] 
@@ -32,12 +32,12 @@ def check_result(apk_name):
 	return r.text
 
 
-def check():
-	apk_name = upload("jimm.apk")
+def check(filename):
+	apk_name = upload(filename)
 	if check_status(apk_name):
-		print check_result(apk_name)
+		return check_result(apk_name)
 	else:
-		print "ERROR"
+		return "\"warningLevel\": E"
 
 if __name__ == "__main__":
 	check()

@@ -1,4 +1,4 @@
-import os,glob,zipfile
+import os,glob,zipfile,upload
 
 apk_dir = "../apk-file"
 permission_list = file("../data/permissions.txt").read().split("\r\n")[:-1]
@@ -35,7 +35,8 @@ def dump_all():
 	for i in apk_list:
 		raw_name = dump_a(i)
 		vector = dump_p(raw_name)
-		fd_ret.write("%s\t%s\n" %(raw_name, vector))
+		level = upload.check(i).split("\"warningLevel\": ")[1][0]
+		fd_ret.write("%s\t%s\t%s\n" %(raw_name, vector, level))
 	fd_ret.close()
 
 if __name__ == "__main__":
