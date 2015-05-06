@@ -14,7 +14,7 @@ def dump_a(apk_name):
 
 def dump_f(d):
 	apk_list = []
-	for file in glob.glob(d + "/*.apk"):
+	for file in glob.glob(d + "/*.APK"):
 		apk_list.append(file)
 	return apk_list	
 
