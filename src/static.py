@@ -1,10 +1,13 @@
 import os,glob,zipfile,upload
 
-apk_dir = "../apk-file"
+apk_dir = "../../Genome"
 permission_list = file("../data/permissions.txt").read().split("\r\n")[:-1]
 
 def dump_a(apk_name):
-	fd = zipfile.ZipFile(apk_name)
+	try:
+		fd = zipfile.ZipFile(apk_name)
+	except:
+		return -1
 	apk_raw_name = apk_name.split("/")[-1].split(".")[0] 
 	for file in fd.namelist():
 		if file == "AndroidManifest.xml":
@@ -14,7 +17,7 @@ def dump_a(apk_name):
 
 def dump_f(d):
 	apk_list = []
-	for file in glob.glob(d + "/*.APK"):
+	for file in glob.glob(d + "/*.apk"):
 		apk_list.append(file)
 	return apk_list	
 
@@ -29,14 +32,18 @@ def dump_p(raw_name):
 			l += "0"
 	return l
 
+import virustotal_report
 def dump_all():
 	apk_list = dump_f(apk_dir)
-	fd_ret = open("../ret", "w")
+	result_list = virustotal_report.read_report2()
+	fd_ret = open("../data/ret.1227", "w")
 	for i in apk_list:
 		raw_name = dump_a(i)
+		if raw_name == -1: continue
 		vector = dump_p(raw_name)
-		level = upload.check(i).split("\"warningLevel\": ")[1][0]
-		fd_ret.write("%s\t%s\t%s\n" %(raw_name, vector, level))
+		if not raw_name + ".apk" in result_list:
+			continue
+		fd_ret.write("%s\t%s\t%s\n" %(raw_name, vector, result_list[raw_name + ".apk"]))
 	fd_ret.close()
 
 if __name__ == "__main__":
