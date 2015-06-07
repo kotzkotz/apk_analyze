@@ -1,0 +1,19 @@
+import os
+import requests 
+import gevent
+from gevent import socket
+from gevent import monkey; monkey.patch_all()
+def download(url):
+	print "[+] Start Downloading %s" %url
+	os.system("curl --connect-timeout 10 -m 180 %s > %s" %(url, url.split("/")[-1]))
+	return
+	r = requests.get(url) 
+	with open(url.split("/")[-1], "wb") as code:
+		code.write(r.text)
+if __name__=='__main__':
+	#for i in file("../data/apk_down"):
+	#	download(i.strip())
+
+    jobs = [gevent.spawn(download,url.strip()) for url in file("../data/apk_down")]
+    gevent.joinall(jobs, timeout=600)
+
